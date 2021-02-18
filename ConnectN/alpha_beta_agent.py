@@ -26,9 +26,9 @@ class AlphaBetaAgent(agent.Agent):
 
         # UN-TUNED VALUES
         # ====================================
-        self.TRAP_BONUS = 300
+        self.TRAP_BONUS = 900
         self.N_IN_A_ROW_SCALAR = 1
-        self.WINNING_BONUS = 2000
+        self.WINNING_BONUS = 1000
         self.DEFENSE_RATIO = 1 # 0.5 - very defensive, 1 - weight wins the same
 
         # TUNED VALUES
