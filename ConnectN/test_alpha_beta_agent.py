@@ -88,7 +88,34 @@ class TestAlphaBetaAgent(unittest.TestCase):
 
     # find which player the AI is by counting pieces on the board
     def test_find_player(self):
-        self.assertEqual(True, True)
+        # player 1
+        n_to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
+        b = board.Board(
+            [[0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]],
+            4,
+            4,
+            n_to_win)
+        found = agent.find_player(b)
+        expect = 1
+        self.assertEqual(found, expect)
+        # player 2
+        n_to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
+        b = board.Board(
+            [[0, 1, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]],
+            4,
+            4,
+            n_to_win)
+        found = agent.find_player(b)
+        expect = 2
+        self.assertEqual(found, expect)
     
     # score a board by counting number of tokens in a row (neglecting the scalars)
     def test_num_in_a_row(self):
@@ -174,6 +201,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         # only diagnal
         n_to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
+        
         agent.player = 1
         agent.quad_scalar = lambda x: x
         b = board.Board(
@@ -190,6 +218,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         # mix
         n_to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
+        
         agent.player = 1
         agent.quad_scalar = lambda x: x
         b = board.Board(
@@ -222,32 +251,41 @@ class TestAlphaBetaAgent(unittest.TestCase):
     
     def test_add_to_points_list(self):
         agent = aba.AlphaBetaAgent("TEST_AI", 1, 4)
+        
+        b = board.Board(
+            [[1, 2, 2, 1, 1],
+            [0, 1, 2, 1, 2],
+            [0, 2, 1, 0, 1],
+            [0, 0, 0, 0, 0]],
+            5,
+            4,
+            2)
         # empty list
         empty_list = []
         try:
-            agent.add_to_points_list(empty_list, 4)
+            agent.add_to_points_list(empty_list, 4, [0,0], b)
         except IndexError:
             self.fail("Index out of bounds on empty_list")
         self.assertEqual([], empty_list)
         # negative point value
         small_list = [3, 2, 1, 7]
-        agent.add_to_points_list(small_list, -4)
+        agent.add_to_points_list(small_list, -4, [0,0], b)
         self.assertEqual([3, 2, 1, 7], small_list)
         # zero point
         small_list = [3, 2, 1, 7]
-        agent.add_to_points_list(small_list, 0)
+        agent.add_to_points_list(small_list, 0, [0,0], b)
         self.assertEqual([3, 2, 1, 7], small_list)
         # add point larger than list
         small_list = [3, 2, 1, 7]
-        agent.add_to_points_list(small_list, 5)
+        agent.add_to_points_list(small_list, 5, [0,0], b)
         self.assertEqual([3, 2, 1, 8], small_list)
         # add last point
         small_list = [3, 2, 1, 7]
-        agent.add_to_points_list(small_list, 4)
+        agent.add_to_points_list(small_list, 4, [0,0], b)
         self.assertEqual([3, 2, 1, 8], small_list)
         # neglect points of 1
         small_list = [3, 2, 1, 7]
-        agent.add_to_points_list(small_list, 1)
+        agent.add_to_points_list(small_list, 1, [0,0], b)
         self.assertEqual([3, 2, 1, 7], small_list)
 
     # simple test to guard the equation used for quad_scalar
@@ -288,6 +326,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 1, 1, 0],
             [0, 2, 2, 0],
@@ -305,6 +344,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 1, 1, 1],
             [0, 0, 0, 0],
@@ -339,6 +379,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 1, 1, 1, 0, 1, 1, 1],
             [0, 2, 2, 2, 0, 0, 0, 0],
@@ -356,6 +397,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1 # NOTE: count_horizontal will not depend on agent.player
+        
         b = board.Board(
             [[1, 1, 1, 1, 0, 1, 1, 1],
             [0, 2, 2, 2, 0, 0, 0, 0],
@@ -422,6 +464,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         h = 4
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        
         agent.player = 1
         b = board.Board(
             [[1, 0, 2, 0],
@@ -432,7 +475,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
             h,
             to_win)
         found = agent.count_vertical(b, 1, to_win)
-        expect = [[0, 0, 1], [0, 0, 1]]
+        expect = [[0, 0, 1], [0, 0, 1]] 
         self.assertEqual(found, expect)
         # multi verticals with larger than N to win
         w = 4
@@ -440,6 +483,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 1, 2, 0],
             [1, 1, 2, 0],
@@ -456,6 +500,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         h = 4
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        
         agent.player = 2
         b = board.Board(
             [[1, 1, 2, 0],
@@ -473,6 +518,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         h = 4
         to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        
         agent.player = 1
         b = board.Board(
             [[1, 1, 2, 1],
@@ -490,6 +536,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         h = 4
         to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        
         agent.player = 1
         b = board.Board(
             [[1, 2],
@@ -590,6 +637,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 2, 2, 0],
             [0, 1, 2, 0],
@@ -607,6 +655,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[0, 2, 1, 0],
             [2, 1, 0, 0],
@@ -624,6 +673,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 2, 1, 0],
             [2, 1, 2, 0],
@@ -672,6 +722,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 2, 1, 0],
             [2, 1, 2, 0],
@@ -689,6 +740,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 2, 1, 0],
             [2, 1, 2, 0],
@@ -706,6 +758,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 1
+        
         b = board.Board(
             [[1, 2, 2, 1, 2, 2],
             [0, 1, 1, 2, 1, 0],
@@ -722,6 +775,7 @@ class TestAlphaBetaAgent(unittest.TestCase):
         to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
         agent.player = 2
+        
         b = board.Board(
             [[1, 2, 2, 1, 2, 2],
             [0, 1, 1, 2, 1, 0],
@@ -733,6 +787,482 @@ class TestAlphaBetaAgent(unittest.TestCase):
         expect = [[0, 2, 0], [0, 5, 0]]
         self.assertEqual(found, expect)
     
+    def test_get_neighbor_coords(self):
+        # testing top left
+        w = 6
+        h = 3
+        to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 2
+        b = board.Board(
+            [[1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.get_neighbor_coords(b, [0,0])
+        expect = [[1,0], [1,1], [0,1]]
+        self.assertEqual(found, expect)
+        # testing top right
+        w = 6
+        h = 3
+        to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 2
+        b = board.Board(
+            [[0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.get_neighbor_coords(b, [5,0])
+        expect = [[5,1], [4,1], [4,0]]
+        self.assertEqual(found, expect)
+        # testing bot right
+        w = 6
+        h = 3
+        to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 2
+        b = board.Board(
+            [[0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1]],
+            w,
+            h,
+            to_win)
+        found = agent.get_neighbor_coords(b, [5,2])
+        expect = [[4,1], [5,1], [4,2]]
+        self.assertEqual(found, expect)
+        # testing bot left
+        w = 6
+        h = 3
+        to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 2
+        b = board.Board(
+            [[0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.get_neighbor_coords(b, [0,2])
+        expect = [[0,1], [1,1], [1,2]]
+        self.assertEqual(found, expect)
+        # testing middle
+        w = 6
+        h = 3
+        to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 2
+        b = board.Board(
+            [[0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0],
+            [0, 0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.get_neighbor_coords(b, [3,1])
+        expect = [[2,0], [3,0], [4,0], [4,1], [4,2], [3,2], [2,2], [2,1]]
+        self.assertEqual(found, expect)
+        # tiny board
+        w = 1
+        h = 3
+        to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 2
+        b = board.Board(
+            [[0],
+            [1],
+            [0]],
+            w,
+            h,
+            to_win)
+        found = agent.get_neighbor_coords(b, [0,1])
+        expect = [[0,0], [0,2]]
+        self.assertEqual(found, expect)
+
+    def test_missing_one_from_win(self):
+        # baseline
+        w = 5
+        h = 5
+        to_win = 5
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [0,0], 1)
+        expect = False
+        self.assertEqual(found, expect)
+        w = 4
+        h = 4
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 2, 1, 0],
+            [2, 1, 2, 0],
+            [1, 0, 0, 0],
+            [0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [2,2], 1)
+        expect = False
+        self.assertEqual(found, expect)
+        # player 1 could win
+        w = 4
+        h = 4
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[2, 2, 1, 2],
+            [2, 1, 2, 2],
+            [1, 1, 0, 1],
+            [0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [2,2], 1)
+        expect = True
+        self.assertEqual(found, expect)
+        # player 2 could win (even with 1 blocking it)
+        w = 4
+        h = 4
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[2, 2, 1, 2],
+            [2, 1, 2, 2],
+            [1, 1, 0, 1],
+            [2, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [1,2], 2)
+        expect = True
+        self.assertEqual(found, expect)
+        # Player 2 can't win
+        w = 5
+        h = 5
+        to_win = 6
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[2, 0, 0, 0, 0],
+            [0, 2, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 2, 0],
+            [0, 0, 0, 0, 2]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [2,2], 2)
+        expect = False
+        self.assertEqual(found, expect)
+        # player 2 could win
+        w = 5
+        h = 5
+        to_win = 5
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[2, 0, 0, 0, 0],
+            [0, 2, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 2, 0],
+            [0, 0, 0, 0, 2]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [2,2], 2)
+        expect = True
+        self.assertEqual(found, expect)
+        # side of board
+        w = 5
+        h = 5
+        to_win = 5
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 0],
+            [0, 0, 1, 0, 0],
+            [0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 4]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [4,0], 1)
+        expect = False
+        self.assertEqual(found, expect)
+        # top left
+        w = 5
+        h = 5
+        to_win = 5
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 0],
+            [0, 0, 1, 0, 0],
+            [0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 4]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [0,0], 1)
+        expect = False
+        self.assertEqual(found, expect)
+        # not an almost win
+        w = 5
+        h = 5
+        to_win = 6
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 0],
+            [0, 0, 1, 0, 0],
+            [0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 4]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [0,4], 1)
+        expect = False
+        self.assertEqual(found, expect)
+        # is almost win
+        w = 5
+        h = 5
+        to_win = 5
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 0],
+            [0, 0, 1, 0, 0],
+            [0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 4]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [0,4], 1)
+        expect = True
+        self.assertEqual(found, expect)
+        # stops when blocked
+        w = 5
+        h = 5
+        to_win = 5
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 0],
+            [0, 0, 2, 0, 0],
+            [0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 4]],
+            w,
+            h,
+            to_win)
+        found = agent.missing_one_from_win(b, [0,4], 1)
+        expect = False
+        self.assertEqual(found, expect)
+
+    def test_is_trap(self):
+        # baseline
+        w = 5
+        h = 5
+        to_win = 5
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [0,0])
+        expect = False
+        self.assertEqual(found, expect)
+        # horizontal
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 2, 1, 2, 0],
+            [0, 1, 1, 2, 0],
+            [0, 0, 1, 2, 0],
+            [1, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [2,3])
+        expect = True
+        self.assertEqual(found, expect)
+        # horizontal non-trap
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 2
+        b = board.Board(
+            [[0, 2, 0, 0, 2],
+            [0, 2, 0, 2, 0],
+            [0, 2, 2, 0, 0],
+            [0, 2, 0, 0, 0],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [1,3])
+        expect = False
+        self.assertEqual(found, expect)
+        # vertical : 1 trap
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 1, 0, 0, 2],
+            [0, 1, 0, 2, 0],
+            [0, 1, 2, 0, 0],
+            [0, 1, 0, 0, 0],
+            [1, 0, 1, 1, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [1,3])
+        expect = True
+        self.assertEqual(found, expect)
+        # vertical : 1 trap-non
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[0, 2, 1, 1, 2],
+            [0, 1, 0, 0, 0],
+            [0, 1, 2, 0, 0],
+            [0, 1, 0, 0, 0],
+            [0, 0, 1, 1, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [1,3])
+        expect = False
+        self.assertEqual(found, expect)
+        # diag : 2 trap
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 2, 1, 1, 2],
+            [0, 1, 1, 0, 0],
+            [0, 1, 2, 0, 0],
+            [1, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [2,3])
+        expect = True
+        self.assertEqual(found, expect)
+        # diag 2
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 2, 2, 0, 0],
+            [0, 1, 1, 0, 0],
+            [1, 1, 2, 1, 0],
+            [1, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [2,3])
+        expect = True
+        self.assertEqual(found, expect)
+        # diag non-trap
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 2, 1, 1, 2],
+            [0, 1, 1, 0, 0],
+            [0, 1, 2, 0, 0],
+            [1, 1, 2, 1, 0],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [2,3])
+        expect = False
+        self.assertEqual(found, expect)
+        # diag non-trap
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 1, 2, 1, 2],
+            [0, 2, 1, 2, 1],
+            [0, 2, 2, 1, 2],
+            [1, 1, 2, 0, 1],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [3,2], )
+        expect = False
+        self.assertEqual(found, expect)
+
+        w = 5
+        h = 5
+        to_win = 4
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, to_win)
+        agent.player = 1
+        b = board.Board(
+            [[1, 1, 2, 1, 2],
+            [0, 0, 1, 2, 1],
+            [0, 0, 0, 1, 2],
+            [0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0]],
+            w,
+            h,
+            to_win)
+        found = agent.is_trap(b, [3,2])
+        expect = False
+        self.assertEqual(found, expect)
+
 
 if __name__ == '__main__':
     unittest.main()

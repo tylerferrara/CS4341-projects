@@ -124,7 +124,8 @@ for i in range(1):
                     time_limit,     # time limit in seconds
                     
         [aba.AlphaBetaAgent("New AI", depth, tokens_to_win),
-        oaba.OldAlphaBetaAgent("Old AI", depth, tokens_to_win),
+        oaba.OldAlphaBetaAgent("Old AI1", depth, tokens_to_win),
+        oaba.OldAlphaBetaAgent("Old AI2", depth, tokens_to_win),
         agent.RandomAgent("random1"),
         # agent.RandomAgent("random2"),
         # agent.RandomAgent("random3"),
