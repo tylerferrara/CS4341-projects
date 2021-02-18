@@ -26,6 +26,8 @@ class TestAlphaBetaAgent(unittest.TestCase):
         n_to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
         agent.player = 1
+        agent.DEFENSE_RATIO = 1
+        agent.WINNING_BONUS = 100
         b = board.Board(
             [[0, 0, 1, 0],
             [0, 0, 1, 0],
@@ -35,12 +37,14 @@ class TestAlphaBetaAgent(unittest.TestCase):
             4,
             n_to_win)
         control_result = agent.win_bonus(b)
-        control_expect = 500
+        control_expect = 100
         self.assertEqual(control_result, control_expect)
         
         n_to_win = 4
         agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
         agent.player = 1
+        agent.DEFENSE_RATIO = 1
+        agent.WINNING_BONUS = 100
         b = board.Board(
             [[0, 0, 1, 0],
             [0, 0, 1, 0],
@@ -57,6 +61,8 @@ class TestAlphaBetaAgent(unittest.TestCase):
         n_to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
         agent.player = 1
+        agent.DEFENSE_RATIO = 1
+        agent.WINNING_BONUS = 800
         b = board.Board(
             [[2, 0, 0, 0],
             [0, 2, 0, 0],
@@ -72,6 +78,8 @@ class TestAlphaBetaAgent(unittest.TestCase):
         # bound to who wins not HOW they win
         n_to_win = 3
         agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
+        agent.DEFENSE_RATIO = 1
+        agent.WINNING_BONUS = 800
         agent.player = 1
         b = board.Board(
             [[2, 2, 2, 2],
@@ -83,6 +91,40 @@ class TestAlphaBetaAgent(unittest.TestCase):
             n_to_win)
         control_result = agent.win_bonus(b)
         control_expect = -800
+        self.assertEqual(control_result, control_expect)
+        # test defense ratio
+        n_to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
+        agent.DEFENSE_RATIO = 0.5
+        agent.WINNING_BONUS = 100
+        agent.player = 1
+        b = board.Board(
+            [[2, 2, 2, 2],
+            [1, 2, 1, 1],
+            [2, 1, 2, 2],
+            [0, 0, 0, 2]],
+            4,
+            4,
+            n_to_win)
+        control_result = agent.win_bonus(b)
+        control_expect = -100
+        self.assertEqual(control_result, control_expect)
+
+        n_to_win = 3
+        agent = aba.AlphaBetaAgent("TEST_AI", 1, n_to_win)
+        agent.DEFENSE_RATIO = 0.5
+        agent.WINNING_BONUS = 100
+        agent.player = 2
+        b = board.Board(
+            [[2, 2, 2, 2],
+            [1, 2, 1, 1],
+            [2, 1, 2, 2],
+            [0, 0, 0, 2]],
+            4,
+            4,
+            n_to_win)
+        control_result = agent.win_bonus(b)
+        control_expect = 50
         self.assertEqual(control_result, control_expect)
 
 

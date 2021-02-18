@@ -28,6 +28,8 @@ class AlphaBetaAgent(agent.Agent):
         # ====================================
         self.TRAP_BONUS = 300
         self.N_IN_A_ROW_SCALAR = 1
+        self.WINNING_BONUS = 2000
+        self.DEFENSE_RATIO = 1 # 0.5 - very defensive, 1 - weight wins the same
 
         # TUNED VALUES
         # ====================================
@@ -163,9 +165,9 @@ class AlphaBetaAgent(agent.Agent):
     def win_bonus(self, brd):
         outcome = brd.get_outcome()
         if self.player == outcome:
-            return 500
+            return self.WINNING_BONUS * self.DEFENSE_RATIO
         elif outcome != 0:
-            return -800
+            return -1 * self.WINNING_BONUS
         else:
             return 0
 
@@ -474,6 +476,8 @@ class AlphaBetaAgent(agent.Agent):
         # last try to find win
         return seen + 1 >= self.to_win
 
+    # ********** CURRENTLY NOT BEING USED **********
+    # 
     # returns all coordinates of neighbors surrounding the given coordinate
     #
     # PARAM  [board.Board] brd: the game board
