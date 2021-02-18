@@ -27,6 +27,7 @@ class AlphaBetaAgent(agent.Agent):
         # UN-TUNED VALUES
         # ====================================
         self.TRAP_BONUS = 300
+        self.N_IN_A_ROW_SCALAR = 1
 
         # TUNED VALUES
         # ====================================
@@ -386,15 +387,11 @@ class AlphaBetaAgent(agent.Agent):
             key = str(x) + "," + str(y)
             seen[key] = True
             # look for a trap
-            if y - 1 >= 0 and self.missing_one_from_win(brd, [x,y-1], piece):
-                # above
-                return True
-            if y + 1 < brd.h and self.missing_one_from_win(brd, [x,y+1], piece):
-                # below
-                return True
-
-        # no traps found
-        return False
+            #
+            #   checking above and below for a near win
+            #
+            return ((y + 1 < brd.h and self.missing_one_from_win(brd, [x,y+1], piece)) or
+                    (y - 1 >= 0 and self.missing_one_from_win(brd, [x,y-1], piece)))
 
     # finds if a horizontal or diagnal line exists where n_in_row + 1 >= to_win
     # NOTE: This niglects counting the coord given
@@ -508,7 +505,7 @@ class AlphaBetaAgent(agent.Agent):
     # RETURN [float]: scalar value used to weigh number of occurances of n_in_a_row
     #
     def quad_scalar(self, x):
-        return x*x*x/self.to_win
+        return self.N_IN_A_ROW_SCALAR * x*x*x/self.to_win
     
     # OPTIMIZED
     # equation to prioritize the middle of the board
