@@ -105,7 +105,7 @@ class AlphaBetaAgent(agent.Agent):
     #
     # PARAM  [board.Board] brd: the board state
     # PARAM  [int] depth: the max depth of recursive calls
-    # PARAM  [bool] max_node: determins if max or min node
+    # PARAM  [bool] max_node: determines if max or min node
     # PARAM  [int] col: column chosen to place last piece
     # RETURN [float]: value of given decision tree
     #
@@ -131,6 +131,40 @@ class AlphaBetaAgent(agent.Agent):
             v = min(v, res)
         return v
 
+    # minimax algorithm with alpha beta pruning (to be called by go)?
+    #
+    # PARAM  [board.Board] brd: the board state
+    # PARAM  [int] depth: the max depth of recursive calls
+    # PARAM  [bool] max_node: determines if max or min node
+    # PARAM  [int] alpha: serves as alpha flag for pruning
+    # PARAM  [int] beta: serves as beta flag for pruning
+    # RETURN [float]: value of given decision tree
+    #
+    def alphabeta(self, brd, depth, max_node, alpha, beta, col):
+        # is the game over?
+        if depth == 0 or len(brd.free_cols()) == 0 or brd.get_outcome() != 0:
+            res = self.evaluate(brd, col)
+            return res
+        # max
+        if max_node:
+            v = float('-inf')
+            for child in self.get_successors(brd):
+                res = self.alphabeta(child[0], depth-1, False, alpha, beta, child[1])
+                v = max(v, res)
+                if v >= beta:
+                    return v
+                alpha = max(alpha, v)
+            return v
+        # min
+        v = float('inf')
+        for child in self.get_successors(brd):
+            res = self.alphabeta(child[0], depth-1, True, alpha, beta, child[1])
+            v = min(v, res)
+            if v <= alpha:
+                return v
+            beta = min(beta, v)
+        return v
+
     # scores a given board counting n_in_a_row, wins, and traps
     #
     # PARAM  [board.Board] brd: the game board
@@ -138,21 +172,25 @@ class AlphaBetaAgent(agent.Agent):
     # RETURN [float]: score of the board (in respect to the AI's positon)
     #
     def evaluate(self, brd, col):
-        # NOTE: TRAP_SCALAR is used within num_in_a_row.
-        #       it will be combined with the win_bonus. This may not be helpful
-        #       if an opponent set a trap but the AI can win the game
-        #
-        #
         score = self.num_in_a_row(brd)
+        # TODO
+        # COUNT NUMBER OF TRAPS (7 SHAPE)
 
-        if brd.get_outcome != 0:
+        # if self.player == 2:
+            # Be Deffensive = weight the other player MORE than yourse
+        
+        outcome = brd.get_outcome()
+        if outcome != 0:
             score = score + self.win_bonus(brd)
             # LOOK FOR TRAPS
             for y in reversed(range(brd.h)):
                 if brd.board[y][col] != 0:
                     win_coord = [col, y]
                     if self.is_trap(brd, win_coord):
-                        score = score + self.TRAP_BONUS
+                        if self.player == outcome:
+                            score = score + self.TRAP_BONUS
+                        else:
+                            score = score - self.TRAP_BONUS
                     break
 
         return score
