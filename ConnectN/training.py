@@ -11,7 +11,7 @@ import genetics as gen
 #     [0.75, 0.75, 0.75, 0.75, 0.75],
 # ]
 
-random.seed(2)
+random.seed(5)
 
 # should be an even number of individuals
 def rand_gene_list(num_genes):
@@ -24,7 +24,7 @@ def rand_gene_list(num_genes):
     return r
 
 
-gene_list = rand_gene_list(2)
+gene_list = rand_gene_list(8)
 best_score = float('-inf')
 best_genes = []
 
