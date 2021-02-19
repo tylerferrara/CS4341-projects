@@ -1,9 +1,11 @@
 import random
 import game
 import agent
+import time
 import alpha_beta_agent as aba
 import old_alpha_beta_agent as oaba
 import last_alpha_beta_agent as laba
+import test_alpha_beta_agent as taba
 
 ######################
 # Play a single game #
@@ -116,24 +118,35 @@ time_limit = 15
 
 w, h = 3, 4
 
-for i in range(3, 8):
-    random.seed(i)
-    w, h = w+1, h+1
-    tokens_to_win = i
-    # Run!
+# for i in range(3, 8):
+#     random.seed(i)
+#     w, h = w+1, h+1
+#     tokens_to_win = i
+#     # Run!
 
-    print("STARTING TOURNAMENT =====================")
-    print("w: ", w, " h: ", h)
-    print("tokens_to_win: ", i)
+#     print("STARTING TOURNAMENT =====================")
+#     print("w: ", w, " h: ", h)
+#     print("tokens_to_win: ", i)
 
-    play_tournament(w,      # board width
-                    h,      # board height
-                    tokens_to_win,      # tokens in a row to win
-                    time_limit,     # time limit in seconds
+#     play_tournament(w,      # board width
+#                     h,      # board height
+#                     tokens_to_win,      # tokens in a row to win
+#                     time_limit,     # time limit in seconds
                     
-        [aba.AlphaBetaAgent("New AI", depth+1, tokens_to_win),
-        oaba.OldAlphaBetaAgent("Old AI", depth, tokens_to_win),
-        laba.LastAlphaBetaAgent("Last AI", depth, tokens_to_win),
-        agent.RandomAgent("random1"),
-    ])
+#         [aba.AlphaBetaAgent("New AI", depth+1, tokens_to_win),
+#         oaba.OldAlphaBetaAgent("Old AI", depth, tokens_to_win),
+#         laba.LastAlphaBetaAgent("Last AI", depth, tokens_to_win),
+#         agent.RandomAgent("random1"),
+#     ])
 
+
+# def ga():
+    
+
+# gene_list = [
+#     [0, 0, 0, 0, 0],
+#     [1, 1, 1, 1, 1],
+#     [0.5, 0.5, 0.5, 0.5, 0.5],
+#     [0.25, 0.25, 0.25, 0.25, 0.25],
+#     [0.75, 0.75, 0.75, 0.75, 0.75],
+# ]

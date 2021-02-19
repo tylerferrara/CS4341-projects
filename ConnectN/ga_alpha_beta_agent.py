@@ -7,7 +7,7 @@ import agent
 
 # OPTOMIZED means we tuned the values to be the best we could
 
-class AlphaBetaAgent(agent.Agent):
+class GAAlphaBetaAgent(agent.Agent):
     """Agent that uses alpha-beta search"""
 
     # Class constructor.
@@ -16,7 +16,8 @@ class AlphaBetaAgent(agent.Agent):
     # PARAM [int] max_depth: the maximum search depth
     # PARAM [int] to_win: number of pieces in a row to win
     # PARAM [bool] isPlayer1: true if the AI is player 1
-    def __init__(self, name, max_depth, to_win):
+    # PARAM [list of float] gene: the genes to fine tune each part of the AI
+    def __init__(self, name, max_depth, to_win, gene):
         super().__init__(name)
         # Max search depth
         self.max_depth = max_depth
@@ -24,20 +25,24 @@ class AlphaBetaAgent(agent.Agent):
         self.to_win = to_win
         self.player = 0
 
-        # UN-TUNED VALUES
+        # TRAINING VALUES
         # ====================================
-        self.TRAP_BONUS = 0.005         # to be multiplied by 100000
-        self.SPEED_TO_WIN = 0.05        # scale wins and traps sooner rather than later
-        self.N_IN_A_ROW_SCALAR = 1      # scale the value of N_IN_A_ROW
-        self.DEFENSE_RATIO = 0.9        # 0.5 - very defensive, 1 - weight wins the same
-        self.MID_SCALAR = 0.3           # weigh the middle of the board
+        # self.TRAP_BONUS = 0.005         # to be multiplied by 100000
+        self.TRAP_BONUS = gene[0]
+        # self.SPEED_TO_WIN = 0.05        # scale wins and traps sooner rather than later
+        self.SPEED_TO_WIN = gene[1]
+        # self.N_IN_A_ROW_SCALAR = 1      # scale the value of N_IN_A_ROW
+        self.N_IN_A_ROW_SCALAR = gene[2]
+        # self.DEFENSE_RATIO = 0.9        # 0.5 - very defensive, 1 - weight wins the same
+        self.DEFENSE_RATIO = gene[3]
+        # self.MID_SCALAR = 0.3           # weigh the middle of the board more than sides
+        self.MID_SCALAR = gene[4]
 
 
         # TUNED VALUES
         # ====================================
         self.WINNING_BONUS = 100000     # will remain static
-        self.STATIC_MID_BONUS = 10000
-
+        self.STATIC_MID_BONUS = 100000
 
 
     # Pick a column.

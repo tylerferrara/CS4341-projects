@@ -625,10 +625,14 @@ class TestAlphaBetaAgent(unittest.TestCase):
     
     # protect the function definition
     def test_col_midpoint_scalar(self):
+        mid_scalar = 0.0001
+        static_bonus = 101201
         def f(col, last_col):
-            return 25 * ((-1 * col * col) + (last_col * col))
+            return mid_scalar * static_bonus * ((-1 * col * col) + (last_col * col))
         
         agent = aba.AlphaBetaAgent("TEST_AI", 1, 3)
+        agent.MID_SCALAR = mid_scalar
+        agent.STATIC_MID_BONUS = static_bonus
         col = 0
         last_col = 20
         for _ in range(5):
