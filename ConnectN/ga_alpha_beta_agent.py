@@ -43,6 +43,7 @@ class GAAlphaBetaAgent(agent.Agent):
         # ====================================
         self.WINNING_BONUS = 100000     # will remain static
         self.STATIC_MID_BONUS = 100000
+        self.STATIC_TRAP_BONUS = 100000
 
 
     # Pick a column.
@@ -199,7 +200,7 @@ class GAAlphaBetaAgent(agent.Agent):
                 if brd.board[y][col] != 0:
                     win_coord = [col, y]
                     if self.is_trap(brd, win_coord):
-                        t_bonus = 100000 * self.TRAP_BONUS
+                        t_bonus = self.STATIC_TRAP_BONUS * self.TRAP_BONUS
                         t_sooner = t_bonus * (depth/self.max_depth) * self.SPEED_TO_WIN
                         t_result = t_bonus + t_sooner
                         if self.player == outcome:

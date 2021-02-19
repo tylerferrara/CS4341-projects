@@ -36,7 +36,7 @@ class AlphaBetaAgent(agent.Agent):
         # TUNED VALUES
         # ====================================
         self.WINNING_BONUS = 100000     # will remain static
-        self.STATIC_MID_BONUS = 10000
+        self.STATIC_MID_BONUS = 100000
 
 
 
