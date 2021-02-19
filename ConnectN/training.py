@@ -1,6 +1,6 @@
 import random
+from datetime import datetime
 import genetics as gen
-
     
 
 # gene_list = [
@@ -24,7 +24,7 @@ def rand_gene_list(num_genes):
     return r
 
 
-gene_list = rand_gene_list(8)
+gene_list = rand_gene_list(2)
 best_score = float('-inf')
 best_genes = []
 
@@ -32,7 +32,7 @@ try:
     # Quit (Ctrl-C) to stop training
     while True:
         # print gene list
-        print("================================================================")
+        print("\n\n================================================================")
         print("                     current gene_list")
         print("----------------------------------------------------------------")
         for i, gene in enumerate(gene_list):
@@ -61,12 +61,33 @@ try:
         gene_list = next_gen
         
 except:
-    print("")
-    print("==========================")
-    print("         FINISHED")
-    print("==========================")
-    print("highest score: ", best_score)
-    print("best genes: ")
-    for g in best_genes:
-        print(g)
-    print("")
+    if len(best_genes) == 0:
+        print("\nYou exited too early to make a new generation....")
+    else:
+        print("\n==========================")
+        print("         FINISHED")
+        print("==========================")
+        print("highest score: ", best_score)
+        print("best genes: ")
+        for g in best_genes:
+            print("\t"+str(g))
+        print("")
+        # write to file
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        f = open("ga_results.txt", "a")
+        f.write("\n----> " + dt_string)
+        f.write("\nhighest score: " + str(best_score))
+        f.write("\nbest genes: ")
+        v_names = [
+            "TRAP_BONUS",
+            "SPEED_TO_WIN",
+            "N_IN_A_ROW_SCALAR",
+            "DEFENSE_RATIO",
+            "MID_SCALAR",
+        ]
+        for i, v in enumerate(best_genes):
+            f.write("\n" + v_names[i] + ": " +str(v))
+    
+    print("\n\n\nIf the program is still running, press CTRL-C, or kill it manually")
+
