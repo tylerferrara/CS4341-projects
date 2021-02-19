@@ -40,7 +40,7 @@ g = game.Game(7, # width
               6, # height
               4, # tokens in a row to win
               agent.InteractiveAgent("human"),    # player 1
-              aba.AlphaBetaAgent("alphabeta", 4, 4)) # player 2
+              aba.AlphaBetaAgent("alphabeta", 5, 4)) # player 2
 
 #
 # Human vs. Human
