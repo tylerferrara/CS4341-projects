@@ -130,7 +130,7 @@ for i in range(3, 8):
                     tokens_to_win,      # tokens in a row to win
                     time_limit,     # time limit in seconds
                     
-        [aba.AlphaBetaAgent("New AI", depth, tokens_to_win),
+        [aba.AlphaBetaAgent("New AI", depth+1, tokens_to_win),
         oaba.OldAlphaBetaAgent("Old AI1", depth, tokens_to_win),
         agent.RandomAgent("random1"),
     ])

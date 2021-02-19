@@ -87,7 +87,7 @@ class AlphaBetaAgent(agent.Agent):
         for child in self.get_successors(brd):
             next_brd = child[0]
             next_move = child[1]
-            found_val = self.minimax(next_brd, self.max_depth, False, next_move)
+            found_val = self.alphabeta(next_brd, self.max_depth, False, float('-inf'), float('inf'), next_move)
             # PRIORITIZE THE MIDDLE OF THE BOARD
             #
             #   NOTE: This may not belong here...
