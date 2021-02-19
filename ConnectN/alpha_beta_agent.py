@@ -28,7 +28,7 @@ class AlphaBetaAgent(agent.Agent):
         # ====================================
         self.TRAP_BONUS = 900
         self.N_IN_A_ROW_SCALAR = 1
-        self.WINNING_BONUS = 1000
+        self.WINNING_BONUS = 2000
         self.DEFENSE_RATIO = 1 # 0.5 - very defensive, 1 - weight wins the same
 
         # TUNED VALUES
@@ -143,7 +143,7 @@ class AlphaBetaAgent(agent.Agent):
     def alphabeta(self, brd, depth, max_node, alpha, beta, col):
         # is the game over?
         if depth == 0 or len(brd.free_cols()) == 0 or brd.get_outcome() != 0:
-            res = self.evaluate(brd, col)
+            res = self.evaluate(brd, col, depth)
             return res
         # max
         if max_node:
@@ -168,10 +168,11 @@ class AlphaBetaAgent(agent.Agent):
     # scores a given board counting n_in_a_row, wins, and traps
     #
     # PARAM  [board.Board] brd: the game board
-    # PARAM  [int] col: column of last move 
+    # PARAM  [int] col: column of last move
+    # PARAM  [int] depth: the depth of the evaluation
     # RETURN [float]: score of the board (in respect to the AI's positon)
     #
-    def evaluate(self, brd, col):
+    def evaluate(self, brd, col, depth):
         score = self.num_in_a_row(brd)
         # TODO
         # COUNT NUMBER OF TRAPS (7 SHAPE)
@@ -181,7 +182,7 @@ class AlphaBetaAgent(agent.Agent):
         
         outcome = brd.get_outcome()
         if outcome != 0:
-            score = score + self.win_bonus(brd)
+            score = score + (self.win_bonus(brd) * (depth/self.max_depth))
             # LOOK FOR TRAPS
             for y in reversed(range(brd.h)):
                 if brd.board[y][col] != 0:
