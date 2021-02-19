@@ -26,10 +26,10 @@ class AlphaBetaAgent(agent.Agent):
 
         # UN-TUNED VALUES
         # ====================================
-        self.TRAP_BONUS = 900
+        self.TRAP_BONUS = 200
         self.N_IN_A_ROW_SCALAR = 1
-        self.WINNING_BONUS = 2000
-        self.DEFENSE_RATIO = 1 # 0.5 - very defensive, 1 - weight wins the same
+        self.WINNING_BONUS = 400
+        self.DEFENSE_RATIO = 0.9 # 0.5 - very defensive, 1 - weight wins the same
 
         # TUNED VALUES
         # ====================================
@@ -112,7 +112,7 @@ class AlphaBetaAgent(agent.Agent):
     def minimax(self, brd, depth, max_node, col):
         # is the game over?
         if depth == 0 or len(brd.free_cols()) == 0 or brd.get_outcome() != 0:
-            e = self.evaluate(brd, col)
+            e = self.evaluate(brd, col, depth)
             # brd.print_it()
             # print(e)
             res = e
@@ -182,16 +182,18 @@ class AlphaBetaAgent(agent.Agent):
         
         outcome = brd.get_outcome()
         if outcome != 0:
-            score = score + (self.win_bonus(brd) * (depth/self.max_depth))
+            w_bonus = self.win_bonus(brd) + (self.win_bonus(brd) * (depth/self.max_depth))
+            score = score + w_bonus
             # LOOK FOR TRAPS
             for y in reversed(range(brd.h)):
                 if brd.board[y][col] != 0:
                     win_coord = [col, y]
                     if self.is_trap(brd, win_coord):
+                        t_bonus = self.TRAP_BONUS + (self.TRAP_BONUS * (depth/self.max_depth))
                         if self.player == outcome:
-                            score = score + self.TRAP_BONUS
+                            score = score + t_bonus
                         else:
-                            score = score - self.TRAP_BONUS
+                            score = score - t_bonus
                     break
 
         return score

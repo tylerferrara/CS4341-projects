@@ -3,6 +3,7 @@ import game
 import agent
 import alpha_beta_agent as aba
 import old_alpha_beta_agent as oaba
+import last_alpha_beta_agent as laba
 
 ######################
 # Play a single game #
@@ -131,7 +132,8 @@ for i in range(3, 8):
                     time_limit,     # time limit in seconds
                     
         [aba.AlphaBetaAgent("New AI", depth+1, tokens_to_win),
-        oaba.OldAlphaBetaAgent("Old AI1", depth, tokens_to_win),
+        oaba.OldAlphaBetaAgent("Old AI", depth, tokens_to_win),
+        laba.LastAlphaBetaAgent("Last AI", depth, tokens_to_win),
         agent.RandomAgent("random1"),
     ])
 
