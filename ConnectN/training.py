@@ -6,10 +6,10 @@ import ga_alpha_beta_agent as ga
 from datetime import datetime
 
 # CHANGE THE SEED VALUE!
-random.seed(420)
+random.seed(54)
 
 
-TOURNAMENTS_PER_GEN = 3
+TOURNAMENTS_PER_GEN = 1
 GLOBAL_THREADS = []
 
 # create specified number of children from two parents
@@ -228,15 +228,53 @@ def rand_gene_list(num_genes):
 
 
 
-# gene_list = rand_gene_list(4)
+gene_list = rand_gene_list(6)
+#
+#   SPREAD
+#
+# gene_list = [
+#     [0.5, 0.5, 0.5, 0.5, 0.5],
+#     [0.25, 0.25, 0.25, 0.25, 0.25],
+#     [0.75, 0.75, 0.75, 0.75, 0.75],
+#     [0.9, 0.2, 0.0001, 0.057, 0.2],
+#     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0],
+#     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0.00000000006],
+# ]
+
+#
+#
+# FROM FILE
+#
 gene_list = [
-    [0.5, 0.5, 0.5, 0.5, 0.5],
-    [0.25, 0.25, 0.25, 0.25, 0.25],
-    [0.75, 0.75, 0.75, 0.75, 0.75],
-    [0.9, 0.2, 0.0001, 0.057, 0.2],
+    [0.26478424425975633,
+    0.178816071472772,
+    0.1627143620522915,
+    0.340475911315279,
+    7.198207202076217e-14],
+
+    [0.2621994622874513,
+    0.44650040812843694,
+    0.5773872191555337,
+    0.4499724986554245,
+    0.9589804149235308],
+
+    [0.19107211499409527,
+    0.3209770342820727,
+    0.20857265961971694,
+    0.9970452049139531,
+    0.5369463139609766],
+
+    [0.22891883854864437,
+    0.09943821131995012,
+    0.8266247142681928,
+    0.46830705500335695,
+    0.38741899424498877],
+
     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0],
+    
     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0.00000000006],
 ]
+
 
 best_score = float('-inf')
 best_genes = []
@@ -261,8 +299,14 @@ try:
         performance = run_multi_tournament(gene_list)
         # store max
         if best_score < performance[0][0]:
-            best_score = performance[0][0]
-            best_genes = gene_list[performance[0][1]]
+            if len(best_genes) > 0:
+                # beat the best AI to BECOME the best AI
+                running = run_multi_tournament([best_genes, gene_list[performance[0][1]]])
+                best_score = running[0][0]
+                best_genes = gene_list[running[0][1]]
+            else:
+                best_score = performance[0][0]
+                best_genes = gene_list[performance[0][1]]
         # create next gen
         next_gen = []
         gene_idx = 0
