@@ -2,6 +2,9 @@ import random
 import game
 import agent
 import alpha_beta_agent as aba
+import ga_alpha_beta_agent as gaba
+import last_alpha_beta_agent as laba
+import old_alpha_beta_agent as oaba
 
 ######################
 # Play a single game #
@@ -101,18 +104,44 @@ def play_tournament(w, h, n, l, ps):
 #######################
 
 # Set random seed for reproducibility
-random.seed(1)
+random.seed(90)
 
 # Construct list of agents in the tournament
-agents = [
-    # aba.AlphaBetaAgent("aba", 4, depth),
-    agent.RandomAgent("random3"),
-    agent.RandomAgent("random4")
-]
 
-# Run!
-play_tournament(7,      # board width
-                6,      # board height
-                4,      # tokens in a row to win
-                15,     # time limit in seconds
-                agents) # player list
+g1 = [0.22891883854864437,
+    0.09943821131995012,
+    0.8266247142681928,
+    0.46830705500335695,
+    0.38741899424498877]
+
+g2 = [0.2621994622874513,
+    0.44650040812843694,
+    0.5773872191555337,
+    0.4499724986554245,
+    0.9589804149235308]
+
+for _ in range(4):
+    depth = 5
+    w = random.randint(4, 8)
+    h = random.randint(4, 8)
+    to_win = random.randint(4, min(w, h))
+    print("\nNEW TOURNAMENT")
+    print("w ", w)
+    print("h ", h)
+    print("to_win ", to_win)
+
+    agents = [
+        aba.AlphaBetaAgent("aba", depth, to_win),
+        gaba.GAAlphaBetaAgent("gaba_1", depth, to_win, g1),
+        gaba.GAAlphaBetaAgent("gaba_2", depth, to_win, g2),
+        oaba.OldAlphaBetaAgent("oaba", depth-1, to_win),
+        laba.LastAlphaBetaAgent("laba", depth-1, to_win),
+        agent.RandomAgent("random"),
+    ]
+
+    # Run!
+    play_tournament(w,      # board width
+                    h,      # board height
+                    to_win,      # tokens in a row to win
+                    15,     # time limit in seconds
+                    agents) # player list

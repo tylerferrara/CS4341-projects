@@ -6,10 +6,10 @@ import ga_alpha_beta_agent as ga
 from datetime import datetime
 
 # CHANGE THE SEED VALUE!
-random.seed(54)
+random.seed(77)
 
 
-TOURNAMENTS_PER_GEN = 1
+TOURNAMENTS_PER_GEN = 2
 GLOBAL_THREADS = []
 
 # create specified number of children from two parents
@@ -42,9 +42,9 @@ def mutate_float(v):
     if v == 0:
         v = 0.0000000000001
     # create a non-zero delta
-    delta = random.uniform(0.88888, 1.0)
+    delta = random.uniform(0.6666666666, 1.0)
     while delta == 1.0:
-        delta = random.uniform(0.88888, 1.0)
+        delta = random.uniform(0.6666666666, 1.0)
     
     if random.randint(0, 1) == 1:
         # multiply (makes v smaller)
@@ -228,7 +228,7 @@ def rand_gene_list(num_genes):
 
 
 
-gene_list = rand_gene_list(6)
+# gene_list = rand_gene_list(6)
 #
 #   SPREAD
 #
@@ -271,7 +271,7 @@ gene_list = [
     0.38741899424498877],
 
     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0],
-    
+
     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0.00000000006],
 ]
 
