@@ -6,7 +6,7 @@ import ga_alpha_beta_agent as ga
 from datetime import datetime
 
 # CHANGE THE SEED VALUE!
-random.seed(1)
+random.seed(420)
 
 
 TOURNAMENTS_PER_GEN = 3
@@ -63,7 +63,7 @@ def run_multi_tournament(gene_list):
         # randomize the game
         w = random.randint(4, 10)
         h = random.randint(4, 10)
-        tokens_to_win = random.randint(3, min(h, h))
+        tokens_to_win = random.randint(3, min(h, w))
         print(".\n.\n.\n.")
         print("-------- NEW Tournament --------")
         print("Size: ", w, " X ", h)
