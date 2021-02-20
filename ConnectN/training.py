@@ -5,6 +5,9 @@ import sys
 import ga_alpha_beta_agent as ga
 from datetime import datetime
 
+# CHANGE THE SEED VALUE!
+random.seed(1)
+
 
 TOURNAMENTS_PER_GEN = 3
 GLOBAL_THREADS = []
@@ -234,9 +237,6 @@ gene_list = [
     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0],
     [0.8003325372556609, 0.8268601826296749, 0.25, 0.6950112639600965, 0.00000000006],
 ]
-
-random.seed(3)
-
 
 best_score = float('-inf')
 best_genes = []
