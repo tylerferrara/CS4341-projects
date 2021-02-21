@@ -572,3 +572,10 @@ class AlphaBetaAgent(agent.Agent):
                 if col != 0:
                     return 2
         return 1
+
+
+
+#
+#   N_TO_WIN: [int] - number of pieces in a row to win
+#
+THE_AGENT = AlphaBetaAgent("Group24", 5, N_TO_WIN)
