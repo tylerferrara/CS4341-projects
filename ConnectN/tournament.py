@@ -3,8 +3,10 @@ import game
 import agent
 import alpha_beta_agent as aba
 import ga_alpha_beta_agent as gaba
-import last_alpha_beta_agent as laba
-import old_alpha_beta_agent as oaba
+import trap_alpha_beta_agent as taba
+
+scoreboard = {}
+
 
 ######################
 # Play a single game #
@@ -92,6 +94,17 @@ def play_tournament(w, h, n, l, ps):
             (s1, s2) = play_match(w, h, n, l, ps[i], ps[j])
             scores[ps[i]] = scores[ps[i]] + s1
             scores[ps[j]] = scores[ps[j]] + s2
+
+            if ps[i].name in scoreboard:
+                scoreboard[ps[i].name] = scoreboard[ps[i].name] + s1
+            else:
+                scoreboard[ps[i].name] = s1
+
+            if ps[j].name in scoreboard:
+                scoreboard[ps[j].name] = scoreboard[ps[j].name] + s2
+            else:
+                scoreboard[ps[j].name] = s2
+
     print("TOURNAMENT END")
     # Calculate and print scores
     sscores = sorted( ((v,k.name) for k,v in scores.items()), reverse=True)
@@ -104,38 +117,24 @@ def play_tournament(w, h, n, l, ps):
 #######################
 
 # Set random seed for reproducibility
-random.seed(90)
+random.seed(362)
 
 # Construct list of agents in the tournament
 
-g1 = [0.22891883854864437,
-    0.09943821131995012,
-    0.8266247142681928,
-    0.46830705500335695,
-    0.38741899424498877]
-
-g2 = [0.2621994622874513,
-    0.44650040812843694,
-    0.5773872191555337,
-    0.4499724986554245,
-    0.9589804149235308]
-
 for _ in range(4):
-    depth = 5
-    w = random.randint(4, 8)
-    h = random.randint(4, 8)
-    to_win = random.randint(4, min(w, h))
+    depth = 4
+    # w = random.randint(4, 8)
+    # h = random.randint(4, 8)
+    w, h = 10, 8
+    # to_win = random.randint(4, min(w, h))
+    to_win = 4
     print("\nNEW TOURNAMENT")
     print("w ", w)
     print("h ", h)
     print("to_win ", to_win)
 
     agents = [
-        aba.AlphaBetaAgent("aba", depth, to_win),
-        gaba.GAAlphaBetaAgent("gaba_1", depth, to_win, g1),
-        gaba.GAAlphaBetaAgent("gaba_2", depth, to_win, g2),
-        oaba.OldAlphaBetaAgent("oaba", depth-1, to_win),
-        laba.LastAlphaBetaAgent("laba", depth-1, to_win),
+        taba.TrapAlphaBetaAgent("trap_5", 6, to_win, 10, 1, 800, 0.85, 0),
         agent.RandomAgent("random"),
     ]
 
@@ -145,3 +144,7 @@ for _ in range(4):
                     to_win,      # tokens in a row to win
                     15,     # time limit in seconds
                     agents) # player list
+
+final_scores = sorted( ((v,k) for k,v in scoreboard.items()), reverse=True)
+for s in final_scores:
+    print(s)

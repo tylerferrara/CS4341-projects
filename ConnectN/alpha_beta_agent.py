@@ -5,8 +5,6 @@ import agent
 # Alpha-Beta Search Agent #
 ###########################
 
-# OPTOMIZED means we tuned the values to be the best we could
-
 class AlphaBetaAgent(agent.Agent):
     """Agent that uses alpha-beta search"""
 
@@ -24,20 +22,20 @@ class AlphaBetaAgent(agent.Agent):
         self.to_win = to_win
         self.player = 0
 
-        # UN-TUNED VALUES
-        # ====================================
-        self.TRAP_BONUS = 0.005         # to be multiplied by 100000
-        self.SPEED_TO_WIN = 0.05        # scale wins and traps sooner rather than later
-        self.N_IN_A_ROW_SCALAR = 1      # scale the value of N_IN_A_ROW
-        self.DEFENSE_RATIO = 0.9        # 0.5 - very defensive, 1 - weight wins the same
-        self.MID_SCALAR = 0.3           # weigh the middle of the board
-
-
         # TUNED VALUES
         # ====================================
-        self.WINNING_BONUS = 100000     # will remain static
-        self.STATIC_MID_BONUS = 100000
-
+        # Rewarded sum for winning through a trap
+        self.TRAP_BONUS = 10
+        # Scale n_in_a_row values
+        self.N_IN_A_ROW_SCALAR = 1
+        # Rewarded sum for winning a game
+        self.WINNING_BONUS = 800
+        # 0.5 - very defensive, 1 - weight wins the same
+        self.DEFENSE_RATIO = 0.85
+        # Prioritize winning a game sooner
+        self.SOONER = 0
+        # Prioritize the middle of the board
+        self.MID_SCALAR = 25
 
 
     # Pick a column.
@@ -186,21 +184,16 @@ class AlphaBetaAgent(agent.Agent):
         
         outcome = brd.get_outcome()
         if outcome != 0:
-            w_sooner = (self.win_bonus(brd) * (depth/self.max_depth)) * self.SPEED_TO_WIN
-            w_bonus = self.win_bonus(brd) + w_sooner
-            score = score + w_bonus
+            score = score + (self.win_bonus(brd)) + (self.SOONER * depth/self.max_depth)
             # LOOK FOR TRAPS
             for y in reversed(range(brd.h)):
                 if brd.board[y][col] != 0:
                     win_coord = [col, y]
                     if self.is_trap(brd, win_coord):
-                        t_bonus = 100000 * self.TRAP_BONUS
-                        t_sooner = t_bonus * (depth/self.max_depth) * self.SPEED_TO_WIN
-                        t_result = t_bonus + t_sooner
                         if self.player == outcome:
-                            score = score + t_result
+                            score = score + self.TRAP_BONUS + (self.SOONER * depth/self.max_depth)
                         else:
-                            score = score - t_result
+                            score = score - self.TRAP_BONUS - (self.SOONER * depth/self.max_depth)
                     break
 
         return score
@@ -567,7 +560,7 @@ class AlphaBetaAgent(agent.Agent):
     # RETURN [float]: scalar value prioritizing the middle of the board
     #
     def col_midpoint_scalar(self, col, last_col):
-        return self.MID_SCALAR * self.STATIC_MID_BONUS * ((-1 * col * col) + (last_col * col))
+        return self.MID_SCALAR * ((-1 * col * col) + (last_col * col))
         
     # run once at the first move of the agent, finding which piece to place
     # [PARAM] brd: board from game

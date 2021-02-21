@@ -7,7 +7,12 @@ import agent
 
 # OPTOMIZED means we tuned the values to be the best we could
 
-class OldAlphaBetaAgent(agent.Agent):
+
+
+#
+# Test agent trap detection
+#
+class TrapAlphaBetaAgent(agent.Agent):
     """Agent that uses alpha-beta search"""
 
     # Class constructor.
@@ -16,7 +21,7 @@ class OldAlphaBetaAgent(agent.Agent):
     # PARAM [int] max_depth: the maximum search depth
     # PARAM [int] to_win: number of pieces in a row to win
     # PARAM [bool] isPlayer1: true if the AI is player 1
-    def __init__(self, name, max_depth, to_win):
+    def __init__(self, name, max_depth, to_win, trap, n_row, win, defense, sooner):
         super().__init__(name)
         # Max search depth
         self.max_depth = max_depth
@@ -26,10 +31,11 @@ class OldAlphaBetaAgent(agent.Agent):
 
         # UN-TUNED VALUES
         # ====================================
-        self.TRAP_BONUS = 900
-        self.N_IN_A_ROW_SCALAR = 1
-        self.WINNING_BONUS = 1000
-        self.DEFENSE_RATIO = 1 # 0.5 - very defensive, 1 - weight wins the same
+        self.TRAP_BONUS = trap
+        self.N_IN_A_ROW_SCALAR = n_row
+        self.WINNING_BONUS = win
+        self.DEFENSE_RATIO = defense # 0.5 - very defensive, 1 - weight wins the same
+        self.SOONER = sooner
 
         # TUNED VALUES
         # ====================================
@@ -182,16 +188,16 @@ class OldAlphaBetaAgent(agent.Agent):
         
         outcome = brd.get_outcome()
         if outcome != 0:
-            score = score + (self.win_bonus(brd))
+            score = score + (self.win_bonus(brd)) + (self.SOONER * depth/self.max_depth)
             # LOOK FOR TRAPS
             for y in reversed(range(brd.h)):
                 if brd.board[y][col] != 0:
                     win_coord = [col, y]
                     if self.is_trap(brd, win_coord):
                         if self.player == outcome:
-                            score = score + self.TRAP_BONUS
+                            score = score + self.TRAP_BONUS + (self.SOONER * depth/self.max_depth)
                         else:
-                            score = score - self.TRAP_BONUS
+                            score = score - self.TRAP_BONUS - (self.SOONER * depth/self.max_depth)
                     break
 
         return score

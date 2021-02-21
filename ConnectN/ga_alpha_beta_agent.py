@@ -41,9 +41,9 @@ class GAAlphaBetaAgent(agent.Agent):
 
         # TUNED VALUES
         # ====================================
-        self.WINNING_BONUS = 100000     # will remain static
-        self.STATIC_MID_BONUS = 100000
-        self.STATIC_TRAP_BONUS = 100000
+        self.WINNING_BONUS = 1000     # will remain static
+        self.STATIC_MID_BONUS = 500
+        self.STATIC_TRAP_BONUS = 800
 
 
     # Pick a column.
