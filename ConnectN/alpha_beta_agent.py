@@ -14,13 +14,14 @@ class AlphaBetaAgent(agent.Agent):
     # PARAM [int] max_depth: the maximum search depth
     # PARAM [int] to_win: number of pieces in a row to win
     # PARAM [bool] isPlayer1: true if the AI is player 1
-    def __init__(self, name, max_depth, to_win):
+    def __init__(self, name, max_depth):
         super().__init__(name)
         # Max search depth
         self.max_depth = max_depth
         # Num of pieces in a row to win
-        self.to_win = to_win
-        self.player = 0
+
+        self.to_win = -1 # temporarily set
+        self.player = 0  # temporarily set
 
         # TUNED VALUES
         # ====================================
@@ -50,6 +51,8 @@ class AlphaBetaAgent(agent.Agent):
         # find opponent token
         if self.player == 0:
             self.player = self.find_player(brd)
+        if self.to_win == -1:
+            self.to_win = brd.n
 
         return self.find_best_column(brd)
 
@@ -573,9 +576,4 @@ class AlphaBetaAgent(agent.Agent):
                     return 2
         return 1
 
-
-
-#
-#   N_TO_WIN: [int] - number of pieces in a row to win
-#
-THE_AGENT = AlphaBetaAgent("Group24", 5, N_TO_WIN)
+THE_AGENT = AlphaBetaAgent("Group24", 5)
