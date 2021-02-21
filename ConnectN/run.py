@@ -2,6 +2,7 @@ import random
 import game
 import agent
 import alpha_beta_agent as aba
+import trap_alpha_beta_agent as taba
 
 # Set random seed for reproducibility
 random.seed(1)
@@ -36,12 +37,13 @@ random.seed(1)
 #
 # Human vs. AlphaBeta
 #
+depth = 7
+to_win = 4
 g = game.Game(7, # width
               6, # height
-              4, # tokens in a row to win
+              to_win, # tokens in a row to win
               agent.InteractiveAgent("human"),    # player 1
-              aba.AlphaBetaAgent("alphabeta", 4, 4)) # player 2
-
+              taba.TrapAlphaBetaAgent("trap_5", depth, 6, 10, 1, 800, 0.85, 0))
 #
 # Human vs. Human
 #

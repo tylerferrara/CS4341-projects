@@ -2,6 +2,11 @@ import random
 import game
 import agent
 import alpha_beta_agent as aba
+import ga_alpha_beta_agent as gaba
+import trap_alpha_beta_agent as taba
+
+scoreboard = {}
+
 
 ######################
 # Play a single game #
@@ -89,6 +94,17 @@ def play_tournament(w, h, n, l, ps):
             (s1, s2) = play_match(w, h, n, l, ps[i], ps[j])
             scores[ps[i]] = scores[ps[i]] + s1
             scores[ps[j]] = scores[ps[j]] + s2
+
+            if ps[i].name in scoreboard:
+                scoreboard[ps[i].name] = scoreboard[ps[i].name] + s1
+            else:
+                scoreboard[ps[i].name] = s1
+
+            if ps[j].name in scoreboard:
+                scoreboard[ps[j].name] = scoreboard[ps[j].name] + s2
+            else:
+                scoreboard[ps[j].name] = s2
+
     print("TOURNAMENT END")
     # Calculate and print scores
     sscores = sorted( ((v,k.name) for k,v in scores.items()), reverse=True)
@@ -101,18 +117,34 @@ def play_tournament(w, h, n, l, ps):
 #######################
 
 # Set random seed for reproducibility
-random.seed(1)
+random.seed(362)
 
 # Construct list of agents in the tournament
-agents = [
-    # aba.AlphaBetaAgent("aba", 4, depth),
-    agent.RandomAgent("random3"),
-    agent.RandomAgent("random4")
-]
 
-# Run!
-play_tournament(7,      # board width
-                6,      # board height
-                4,      # tokens in a row to win
-                15,     # time limit in seconds
-                agents) # player list
+for _ in range(4):
+    depth = 4
+    # w = random.randint(4, 8)
+    # h = random.randint(4, 8)
+    w, h = 10, 8
+    # to_win = random.randint(4, min(w, h))
+    to_win = 4
+    print("\nNEW TOURNAMENT")
+    print("w ", w)
+    print("h ", h)
+    print("to_win ", to_win)
+
+    agents = [
+        taba.TrapAlphaBetaAgent("trap_5", 6, to_win, 10, 1, 800, 0.85, 0),
+        agent.RandomAgent("random"),
+    ]
+
+    # Run!
+    play_tournament(w,      # board width
+                    h,      # board height
+                    to_win,      # tokens in a row to win
+                    15,     # time limit in seconds
+                    agents) # player list
+
+final_scores = sorted( ((v,k) for k,v in scoreboard.items()), reverse=True)
+for s in final_scores:
+    print(s)
